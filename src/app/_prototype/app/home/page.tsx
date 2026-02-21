@@ -36,7 +36,7 @@ export default function HomePage() {
             setLoading(false);
         }
         load();
-    }, []);
+    }, [supabase]);
 
     if (loading) return (
         <div className="page-content flex items-center justify-center" style={{ minHeight: '80vh' }}>
