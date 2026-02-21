@@ -41,17 +41,17 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="badge badge-orator mb-24">
+            <div className="badge badge-orator mb-24 mx-auto">
               <Star size={14} className="mr-8" /> Private Beta Access
             </div>
-            <h1 className="hero-title mb-24 text-center">
+            <h1 className="hero-title mb-24 text-center mx-auto">
               The AI Coach for <br />
               <span className="text-gold">Public Speaking</span>
             </h1>
             <p className="hero-subtitle mb-40 mx-auto text-center">
               Master the flow of your speech with real-time feedback and expert insights. Join the waitlist for 1 month of Pro access—on us.
             </p>
-            <div className="flex justify-center items-center gap-16 mobile-column">
+            <div className="flex justify-center items-center gap-16 mobile-column mx-auto">
               <Link href="/join" className="btn btn-primary btn-lg px-48">
                 Reserve My Spot <ChevronRight size={20} />
               </Link>
@@ -257,8 +257,8 @@ export default function LandingPage() {
         .featured-card { position: relative; border-width: 2px; transform: scale(1.05); z-index: 2; }
         .featured-badge { position: absolute; top: 16px; right: 16px; background: var(--gold); color: var(--navy); font-size: 0.65rem; font-weight: 900; padding: 4px 10px; border-radius: 4px; }
         
-        .pricing-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; }
-        .pricing-card { width: 100%; maxWidth: 360px; display: flex; flex-direction: column; }
+        .pricing-container { display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; align-items: stretch; gap: 32px; width: 100%; max-width: 1200px; margin: 0 auto; }
+        .pricing-card { flex: 1; max-width: 360px; display: flex; flex-direction: column; }
         
         .mobile-column { }
         .mr-8 { margin-right: 8px; }
@@ -267,11 +267,12 @@ export default function LandingPage() {
         .border-t { border-top: 1px solid var(--border); }
         
         @media (max-width: 1200px) {
-          .pricing-container { gap: 24px; }
-          .pricing-card { maxWidth: 320px; }
+          .pricing-container { gap: 24px; padding: 0 20px; }
+          .pricing-card { max-width: 320px; }
         }
 
         @media (max-width: 1024px) {
+          .pricing-container { flex-wrap: wrap; }
           .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
           .grid-cols-2 { grid-template-columns: 1fr; gap: 64px; }
           .dial-placeholder { width: 300px; height: 300px; }
@@ -281,7 +282,8 @@ export default function LandingPage() {
           .mobile-column { flex-direction: column; align-items: center; }
           .grid-cols-3 { grid-template-columns: 1fr; }
           .hero-section { padding: 120px 0 80px; }
-          .pricing-container { flex-direction: column; align-items: center; }
+          .pricing-container { flex-direction: column; align-items: center; flex-nowrap: wrap; }
+          .pricing-card { max-width: 100%; width: 100%; }
         }
       `}</style>
     </main>
