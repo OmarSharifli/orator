@@ -1,315 +1,267 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
-  CheckCircle2,
   ChevronRight,
-  Mail,
-  ShieldCheck,
-  Mic2,
+  BrainCircuit,
   Zap,
-  Trophy,
   Quote,
+  Check,
   Star,
-  Users
+  ArrowRight
 } from 'lucide-react';
-
-type Step = 'hero' | 'email' | 'code' | 'success';
+import Link from 'next/link';
 
 export default function LandingPage() {
-  const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
-  const [step, setStep] = useState<Step>('hero');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [mounted, setMounted] = useState(false);
-
-  const supabase = createClient();
-
-  useEffect(() => setMounted(true), []);
-
-  async function handleSendCode(e: React.FormEvent) {
-    if (e) e.preventDefault();
-    if (!email) return;
-    setLoading(true);
-    setError('');
-
-    try {
-      const { error: otpError } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: true,
-        },
-      });
-
-      if (otpError) {
-        setError(otpError.message);
-      } else {
-        setStep('code');
-      }
-    } catch {
-      setError('Connection failed. Please check your internet.');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleVerifyCode(e: React.FormEvent) {
-    if (e) e.preventDefault();
-    if (!code) return;
-    setLoading(true);
-    setError('');
-
-    try {
-      const { error: verifyError } = await supabase.auth.verifyOtp({
-        email,
-        token: code,
-        type: 'email',
-      });
-
-      if (verifyError) {
-        setError('Invalid or expired code. Please try again.');
-      } else {
-        // Track in waitlist table too for easy admin view
-        await supabase.from('waitlist').upsert([{ email }], { onConflict: 'email' });
-        setStep('success');
-      }
-    } catch {
-      setError('Verification failed.');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  if (!mounted) return null;
-
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.5 }
   };
 
   return (
     <main className="landing-page">
       <div className="bg-glow" />
 
-      {/* 1. Header/Nav */}
-      <nav className="nav" style={{ background: 'transparent', border: 'none' }}>
+      {/* Navigation */}
+      <nav className="nav sticky-nav">
         <div className="container nav-inner">
-          <div className="nav-logo">Orat<span>or</span></div>
-          <button className="btn btn-ghost btn-sm" onClick={() => setStep('email')}>Waitlist Login</button>
+          <Link href="/" className="nav-logo">Orat<span>or</span></Link>
+          <div className="nav-actions">
+            <Link href="/join" className="btn btn-primary btn-sm">Join Waitlist</Link>
+          </div>
         </div>
       </nav>
 
-      {/* 2. Hero Section */}
-      <section className="hero-section flex items-center justify-center">
-        <div className="container-md text-center">
-          <motion.div {...fadeInUp}>
-            <div className="badge badge-orator mb-24 animate-pulse-gold">
-              🎤 Private Beta Access
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="container text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="badge badge-orator mb-24">
+              <Star size={14} className="mr-8" /> Private Beta Access
             </div>
-            <h1 className="mb-24">
-              Speak with <span className="text-gold">Authority.</span><br />
-              Captivate any <span className="text-gold">Audience.</span>
+            <h1 className="hero-title mb-24">
+              The AI Coach for <br />
+              <span className="text-gold">Public Speaking</span>
             </h1>
-            <p className="text-secondary mb-40 mx-auto" style={{ fontSize: '1.25rem', maxWidth: '600px' }}>
-              Orator uses AI to analyze your speech in real-time, giving you the coaching of a world-class speaker at your fingertips.
+            <p className="hero-subtitle mb-40 mx-auto">
+              Master the flow of your speech with real-time feedback and expert insights. Join the waitlist for 1 month of Pro access—on us.
             </p>
-            <button className="btn btn-primary btn-lg" onClick={() => setStep('email')}>
-              Join the Elite Waitlist <ChevronRight size={20} />
-            </button>
-            <p className="text-muted mt-16" style={{ fontSize: '0.85rem' }}>
-              Confirmed members get <strong>1 month of Pro FREE</strong> ($19 value)
-            </p>
+            <div className="flex justify-center gap-16 mobile-column">
+              <Link href="/join" className="btn btn-primary btn-lg px-48">
+                Reserve My Spot <ChevronRight size={20} />
+              </Link>
+              <Link href="/#features" className="btn btn-secondary btn-lg px-48">
+                Explore Features
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* 3. Features Section */}
-      <section className="features-section py-80">
+      {/* Stats Section */}
+      <section className="stats-section py-48 border-y bg-navy-2">
         <div className="container">
-          <div className="text-center mb-56">
-            <h2 className="mb-16">Train Like a Professional</h2>
-            <p className="text-secondary mx-auto" style={{ maxWidth: '500px' }}>Everything you need to move from "Um..." to "Wow."</p>
+          <div className="stats-grid">
+            <div className="stat-item">
+              <h3>1,200+</h3>
+              <p>Waitlist Members</p>
+            </div>
+            <div className="stat-item">
+              <h3>100+</h3>
+              <p>Expert Tips</p>
+            </div>
+            <div className="stat-item">
+              <h3>24/7</h3>
+              <p>AI Feedback</p>
+            </div>
+            <div className="stat-item">
+              <h3>5</h3>
+              <p>Skill Divisions</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="section-padding">
+        <div className="container">
+          <div className="text-center mb-64">
+            <h2 className="mb-16">Speak with Confidence</h2>
+            <p className="text-secondary mx-auto" style={{ maxWidth: '500px' }}>Our technology bridges the gap between practice and persistence.</p>
           </div>
 
-          <div className="grid-3 gap-32">
+          <div className="grid grid-cols-3 gap-32">
             {[
-              { icon: <Mic2 className="text-gold" />, title: "AI Analysis", desc: "Real-time tracking of filler words, pace, energy, and storytelling structure." },
-              { icon: <Quote className="text-gold" />, title: "Expert Library", desc: "100+ proven tips from Simon Sinek, Tony Robbins, and world-class speakers." },
-              { icon: <Zap className="text-gold" />, title: "XP System", desc: "Gamified progress. Level up your speaking and earn your place on the leaderboard." },
-              { icon: <ShieldCheck className="text-gold" />, title: "Privacy First", desc: "Your recordings are encrypted and private. Only you (and your AI coach) see them." },
-              { icon: <Users className="text-gold" />, title: "Global Board", desc: "See where you rank against speakers worldwide. Tiered divisions from Novice to Legend." },
-              { icon: <Star className="text-gold" />, title: "Personal Roadmap", desc: "Custom coaching paths based on your specific speaking weaknesses." }
+              {
+                icon: <BrainCircuit className="text-gold" />,
+                title: "Deep Analysis",
+                desc: "We track filler words, pacing, and tone to give you a scientific breakdown of your performance."
+              },
+              {
+                icon: <Quote className="text-gold" />,
+                title: "Expert Library",
+                desc: "Learn from the best. Curated tips from top-tier keynote speakers and storytelling masters."
+              },
+              {
+                icon: <Zap className="text-gold" />,
+                title: "Gamified Growth",
+                desc: "Earn XP, climb the leaderboard, and unlock harder topics as your skills evolve."
+              }
             ].map((f, i) => (
               <motion.div
                 key={i}
                 className="card-glass p-32"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                {...fadeInUp}
               >
-                <div style={{ marginBottom: 16 }}>{f.icon}</div>
-                <h4 className="mb-12">{f.title}</h4>
-                <p style={{ fontSize: '0.9rem' }}>{f.desc}</p>
+                <div className="mb-20 flex items-center justify-center" style={{ background: 'var(--gold-dim)', width: '48px', height: '48px', borderRadius: '12px' }}>
+                  {f.icon}
+                </div>
+                <h3 className="mb-12" style={{ fontSize: '1.25rem' }}>{f.title}</h3>
+                <p className="text-secondary" style={{ fontSize: '0.95rem' }}>{f.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 4. Pricing / Plans Peek */}
-      <section className="pricing-section py-80 bg-navy-2">
+      {/* Visual Showcase */}
+      <section className="showcase-section py-120 bg-navy-3 overflow-hidden">
         <div className="container">
-          <div className="text-center mb-48">
-            <h2 className="mb-16 text-gold">Simple, Transparent Plans</h2>
-          </div>
-          <div className="flex gap-32 justify-center flex-wrap">
-            <div className="card-glass p-32" style={{ width: '320px', border: '1px solid var(--border)' }}>
-              <h3 className="mb-8">Free</h3>
-              <div style={{ fontSize: '2rem', fontWeight: 800, marginBottom: 16 }}>$0<span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>/mo</span></div>
-              <ul className="text-secondary" style={{ listStyle: 'none', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <li>✓ Basic AI Feedback</li>
-                <li>✓ 3 Sessions / Day</li>
-                <li>✓ Tier 1 Topics</li>
-                <li>✕ No Premium Tips</li>
-              </ul>
-            </div>
-            <div className="card-gold p-32" style={{ width: '320px', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: 12, right: -30, background: 'var(--gold)', color: 'var(--navy)', fontSize: '0.7rem', fontWeight: 900, padding: '4px 40px', transform: 'rotate(45deg)' }}>BEST VALUE</div>
-              <h3 className="mb-8">Pro</h3>
-              <div style={{ fontSize: '2rem', fontWeight: 800, marginBottom: 16 }}>$19<span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>/mo</span></div>
-              <ul style={{ listStyle: 'none', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <li>✓ Advanced AI Insight</li>
-                <li>✓ Unlimited Sessions</li>
-                <li>✓ All 100+ Premium Tips</li>
-                <li>✓ **Waitlist Bonus Month**</li>
-              </ul>
+          <div className="grid grid-cols-2 gap-80 items-center">
+            <motion.div {...fadeInUp}>
+              <h2 className="mb-24">Unlock Your <span className="text-gold">Daily Challenge</span></h2>
+              <p className="text-secondary mb-32">
+                Every day, Pull the Lever to receive a random topic and a curated tip. It&apos;s designed to help you think on your feet and master the art of impromptu speaking.
+              </p>
+              <div className="flex flex-col gap-16 mb-40">
+                <div className="flex items-center gap-12">
+                  <div className="check-icon"><Check size={14} /></div>
+                  <span className="font-medium">100% Randomized Topics</span>
+                </div>
+                <div className="flex items-center gap-12">
+                  <div className="check-icon"><Check size={14} /></div>
+                  <span className="font-medium">Division-based Difficulty</span>
+                </div>
+                <div className="flex items-center gap-12">
+                  <div className="check-icon"><Check size={14} /></div>
+                  <span className="font-medium">XP Bonuses for Challenges</span>
+                </div>
+              </div>
+              <Link href="/join" className="btn btn-secondary">Reserve Your Spot</Link>
+            </motion.div>
+            <div className="relative">
+              <div className="dial-placeholder card-glass">
+                <div className="dial-circle">
+                  <div className="dial-content">
+                    <span style={{ fontSize: '3rem' }}>🎰</span>
+                    <p className="mt-8 font-bold text-gold">THE LEVER</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. Footer */}
-      <footer className="footer py-80 text-center">
+      {/* Pricing */}
+      <section id="pricing" className="section-padding">
         <div className="container">
-          <div className="nav-logo mb-24">Orat<span>or</span></div>
-          <p className="text-muted">© 2026 Orator AI. All rights reserved.</p>
+          <div className="text-center mb-64">
+            <h2 className="text-gold mb-16">Simple Pricing</h2>
+            <p className="text-secondary">Join early and lock in exclusive benefits.</p>
+          </div>
+          <div className="flex justify-center gap-32 mobile-column">
+            <div className="card-glass p-40" style={{ width: '100%', maxWidth: '380px' }}>
+              <h4 className="text-muted mb-8">Basic</h4>
+              <div className="price-tag mb-32">$0<span>/mo</span></div>
+              <ul className="feature-list mb-40">
+                <li><Check size={16} /> 3 Sessions / Day</li>
+                <li><Check size={16} /> Basic Feedback</li>
+                <li className="disabled">Premium AI Analysis</li>
+              </ul>
+              <Link href="/join" className="btn btn-secondary w-full">Join Now</Link>
+            </div>
+            <div className="card-gold p-40 featured-card" style={{ width: '100%', maxWidth: '380px' }}>
+              <div className="featured-badge">LAUNCH OFFER</div>
+              <h4 className="text-gold mb-8">Pro</h4>
+              <div className="price-tag mb-32">$19<span>/mo</span></div>
+              <ul className="feature-list mb-40">
+                <li><Check size={16} /> Unlimited Sessions</li>
+                <li><Check size={16} /> Advanced AI Analysis</li>
+                <li><Check size={16} /> 100+ Expert Tips</li>
+                <li><Check size={16} /> **1 Month Free Bonus**</li>
+              </ul>
+              <Link href="/join" className="btn btn-primary w-full shadow-lg">Claim Offer</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="cta-section py-80 border-t">
+        <div className="container text-center">
+          <h2 className="mb-24">Ready to find your voice?</h2>
+          <Link href="/join" className="btn btn-primary btn-lg">
+            Join the Waitlist Now <ArrowRight size={20} className="ml-8" />
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="footer py-40 bg-navy-2">
+        <div className="container text-center">
+          <div className="nav-logo mb-16">Orat<span>or</span></div>
+          <p className="text-muted text-sm">© 2026 Orator AI. All rights reserved.</p>
         </div>
       </footer>
 
-      {/* 6. Waitlist Modal Overlay */}
-      <AnimatePresence>
-        {step !== 'hero' && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="modal-overlay"
-          >
-            <div className="modal-content card-glass" style={{ maxWidth: '440px', width: '90%' }}>
-              <button className="modal-close" onClick={() => { setStep('hero'); setError(''); }}>×</button>
-
-              <AnimatePresence mode="wait">
-                {step === 'email' ? (
-                  <motion.div key="email" {...fadeInUp} className="text-center p-8">
-                    <Mail className="mx-auto mb-16 text-gold" size={40} />
-                    <h3 className="mb-12">Step 1: Secure Your Spot</h3>
-                    <p className="text-secondary mb-24">We&apos;ll send a 6-digit confirmation code to your inbox.</p>
-                    <form onSubmit={handleSendCode}>
-                      <input
-                        type="email"
-                        placeholder="your@email.com"
-                        className="form-input mb-12"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        autoFocus
-                      />
-                      {error && <p className="text-danger mb-12" style={{ fontSize: '0.85rem' }}>{error}</p>}
-                      <button type="submit" className="btn btn-primary w-full h-56" disabled={loading}>
-                        {loading ? <span className="spinner" /> : "Send Confirmation Code"}
-                      </button>
-                    </form>
-                  </motion.div>
-                ) : step === 'code' ? (
-                  <motion.div key="code" {...fadeInUp} className="text-center p-8">
-                    <ShieldCheck className="mx-auto mb-16 text-gold" size={40} />
-                    <h3 className="mb-12">Confirm Your Identity</h3>
-                    <p className="text-secondary mb-24">Enter the 6-digit code sent to <br /><strong>{email}</strong></p>
-                    <form onSubmit={handleVerifyCode}>
-                      <input
-                        type="text"
-                        placeholder="000000"
-                        maxLength={6}
-                        className="form-input mb-12 text-center"
-                        style={{ fontSize: '1.5rem', letterSpacing: '0.5em', fontWeight: 700 }}
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
-                        required
-                        autoFocus
-                      />
-                      {error && <p className="text-danger mb-12" style={{ fontSize: '0.85rem' }}>{error}</p>}
-                      <button type="submit" className="btn btn-primary w-full h-56" disabled={loading}>
-                        {loading ? <span className="spinner" /> : "Complete Registration"}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-ghost mt-12 w-full"
-                        onClick={() => setStep('email')}
-                        style={{ fontSize: '0.8rem' }}
-                      >
-                        Back to email entry
-                      </button>
-                    </form>
-                  </motion.div>
-                ) : (
-                  <motion.div key="success" {...fadeInUp} className="text-center p-8">
-                    <CheckCircle2 className="mx-auto mb-16 text-success" size={64} />
-                    <h3 className="mb-12">Welcome to the Inner Circle</h3>
-                    <p className="text-secondary mb-24">
-                      Your spot is verified. We&apos;ve reserved <strong>1 Month of Pro Access</strong> for you. Keep an eye on your inbox for the launch invite!
-                    </p>
-                    <button className="btn btn-secondary w-full" onClick={() => setStep('hero')}>Close</button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <style jsx>{`
-        .landing-page { min-height: 100vh; position: relative; }
-        .hero-section { min-height: 80vh; padding: 120px 0 60px; }
-        .py-80 { padding: 80px 0; }
-        .mb-56 { margin-bottom: 56px; }
+        .landing-page { color: var(--text-primary); }
+        .hero-section { padding: 160px 0 120px; }
+        .hero-title { font-size: clamp(3rem, 7vw, 5rem); line-height: 1.1; letter-spacing: -0.04em; }
+        .hero-subtitle { font-size: 1.25rem; max-width: 600px; color: var(--text-secondary); line-height: 1.6; }
+        .section-padding { padding: 100px 0; }
         
-        .modal-overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(0,0,0,0.8);
-          backdrop-filter: blur(10px);
-          z-index: 1000;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; }
+        .stat-item h3 { font-size: 2.5rem; color: var(--gold); font-weight: 800; margin-bottom: 4px; }
+        .stat-item p { font-size: 0.875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+        
+        .check-icon { background: var(--gold-dim); padding: 4px; border-radius: 6px; color: var(--gold); }
+        .font-medium { font-weight: 500; }
+        
+        .dial-placeholder { padding: 40px; border-radius: 50%; width: 400px; height: 400px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 2px solid var(--border-gold); }
+        .dial-circle { width: 100%; height: 100%; border-radius: 50%; background: var(--navy-3); display: flex; align-items: center; justify-content: center; }
+        
+        .price-tag { font-size: 3.5rem; font-weight: 800; }
+        .price-tag span { font-size: 1.25rem; color: var(--text-muted); font-weight: 400; }
+        .feature-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+        .feature-list li { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; }
+        .feature-list li.disabled { color: var(--text-muted); text-decoration: line-through; }
+        
+        .featured-card { position: relative; border-width: 2px; }
+        .featured-badge { position: absolute; top: 16px; right: 16px; background: var(--gold); color: var(--navy); font-size: 0.65rem; font-weight: 900; padding: 4px 10px; border-radius: 4px; }
+        
+        .mobile-column { }
+        .mr-8 { margin-right: 8px; }
+        .ml-8 { margin-left: 8px; }
+        .border-y { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .border-t { border-top: 1px solid var(--border); }
+        
+        @media (max-width: 1024px) {
+          .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+          .grid-cols-2 { grid-template-columns: 1fr; gap: 64px; }
+          .dial-placeholder { width: 300px; height: 300px; }
         }
-        .modal-content {
-          padding: 40px;
-          position: relative;
+        @media (max-width: 768px) {
+          .mobile-column { flex-direction: column; align-items: center; }
+          .grid-cols-3 { grid-template-columns: 1fr; }
+          .hero-section { padding: 120px 0 80px; }
         }
-        .modal-close {
-          position: absolute;
-          top: 16px;
-          right: 16px;
-          background: transparent;
-          color: var(--text-muted);
-          font-size: 1.5rem;
-        }
-        .h-56 { height: 56px; }
       `}</style>
     </main>
   );
