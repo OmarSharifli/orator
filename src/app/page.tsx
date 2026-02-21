@@ -44,14 +44,14 @@ export default function LandingPage() {
             <div className="badge badge-orator mb-24">
               <Star size={14} className="mr-8" /> Private Beta Access
             </div>
-            <h1 className="hero-title mb-24">
+            <h1 className="hero-title mb-24 text-center">
               The AI Coach for <br />
               <span className="text-gold">Public Speaking</span>
             </h1>
-            <p className="hero-subtitle mb-40 mx-auto">
+            <p className="hero-subtitle mb-40 mx-auto text-center">
               Master the flow of your speech with real-time feedback and expert insights. Join the waitlist for 1 month of Pro access—on us.
             </p>
-            <div className="flex justify-center gap-16 mobile-column">
+            <div className="flex justify-center items-center gap-16 mobile-column">
               <Link href="/join" className="btn btn-primary btn-lg px-48">
                 Reserve My Spot <ChevronRight size={20} />
               </Link>
@@ -92,7 +92,7 @@ export default function LandingPage() {
         <div className="container">
           <div className="text-center mb-64">
             <h2 className="mb-16">Speak with Confidence</h2>
-            <p className="text-secondary mx-auto" style={{ maxWidth: '500px' }}>Our technology bridges the gap between practice and persistence.</p>
+            <p className="text-secondary mx-auto text-center" style={{ maxWidth: '500px' }}>Our technology bridges the gap between practice and persistence.</p>
           </div>
 
           <div className="grid grid-cols-3 gap-32">
@@ -175,8 +175,8 @@ export default function LandingPage() {
             <h2 className="text-gold mb-16">Simple Pricing</h2>
             <p className="text-secondary">Join early and lock in exclusive benefits.</p>
           </div>
-          <div className="flex justify-center gap-32 mobile-column">
-            <div className="card-glass p-40" style={{ width: '100%', maxWidth: '380px' }}>
+          <div className="flex justify-center gap-32 pricing-container">
+            <div className="card-glass p-40 pricing-card">
               <h4 className="text-muted mb-8">Basic</h4>
               <div className="price-tag mb-32">$0<span>/mo</span></div>
               <ul className="feature-list mb-40">
@@ -186,7 +186,7 @@ export default function LandingPage() {
               </ul>
               <Link href="/join" className="btn btn-secondary w-full">Join Now</Link>
             </div>
-            <div className="card-gold p-40 featured-card" style={{ width: '100%', maxWidth: '380px' }}>
+            <div className="card-gold p-40 featured-card pricing-card">
               <div className="featured-badge">LAUNCH OFFER</div>
               <h4 className="text-gold mb-8">Pro</h4>
               <div className="price-tag mb-32">$19<span>/mo</span></div>
@@ -197,6 +197,17 @@ export default function LandingPage() {
                 <li><Check size={16} /> **1 Month Free Bonus**</li>
               </ul>
               <Link href="/join" className="btn btn-primary w-full shadow-lg">Claim Offer</Link>
+            </div>
+            <div className="card-glass p-40 pricing-card">
+              <h4 className="text-muted mb-8">Premium</h4>
+              <div className="price-tag mb-32">$49<span>/mo</span></div>
+              <ul className="feature-list mb-40">
+                <li><Check size={16} /> Everything in Pro</li>
+                <li><Check size={16} /> 1-on-1 AI Mentor</li>
+                <li><Check size={16} /> Team Analytics</li>
+                <li><Check size={16} /> Custom Learning Path</li>
+              </ul>
+              <Link href="/join" className="btn btn-secondary w-full">Go Premium</Link>
             </div>
           </div>
         </div>
@@ -243,8 +254,11 @@ export default function LandingPage() {
         .feature-list li { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; }
         .feature-list li.disabled { color: var(--text-muted); text-decoration: line-through; }
         
-        .featured-card { position: relative; border-width: 2px; }
+        .featured-card { position: relative; border-width: 2px; transform: scale(1.05); z-index: 2; }
         .featured-badge { position: absolute; top: 16px; right: 16px; background: var(--gold); color: var(--navy); font-size: 0.65rem; font-weight: 900; padding: 4px 10px; border-radius: 4px; }
+        
+        .pricing-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; }
+        .pricing-card { width: 100%; maxWidth: 360px; display: flex; flex-direction: column; }
         
         .mobile-column { }
         .mr-8 { margin-right: 8px; }
@@ -252,15 +266,22 @@ export default function LandingPage() {
         .border-y { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .border-t { border-top: 1px solid var(--border); }
         
+        @media (max-width: 1200px) {
+          .pricing-container { gap: 24px; }
+          .pricing-card { maxWidth: 320px; }
+        }
+
         @media (max-width: 1024px) {
           .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
           .grid-cols-2 { grid-template-columns: 1fr; gap: 64px; }
           .dial-placeholder { width: 300px; height: 300px; }
+          .featured-card { transform: scale(1); }
         }
         @media (max-width: 768px) {
           .mobile-column { flex-direction: column; align-items: center; }
           .grid-cols-3 { grid-template-columns: 1fr; }
           .hero-section { padding: 120px 0 80px; }
+          .pricing-container { flex-direction: column; align-items: center; }
         }
       `}</style>
     </main>
