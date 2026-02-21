@@ -31,7 +31,7 @@ export default function WaitlistPage() {
         if (sbError.code === '23505') {
           setError('This email is already on the waitlist.');
         } else {
-          setError('Something went wrong. Please try again.');
+          setError(`Error: ${sbError.message || 'Something went wrong. Please try again.'}`);
         }
       } else {
         setSubmitted(true);
