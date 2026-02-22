@@ -141,13 +141,13 @@ export default function JoinWaitlistPage() {
                                 <div className="text-center mb-32">
                                     <ShieldCheck className="mx-auto mb-16 text-gold" size={48} />
                                     <h2 className="mb-8">Check your Inbox</h2>
-                                    <p className="text-secondary">Enter the confirmation code sent to <br /><strong>{email}</strong></p>
+                                    <p className="text-secondary">Enter the 8-digit code sent to <br /><strong>{email}</strong></p>
                                 </div>
 
                                 <form onSubmit={handleVerifyCode} className="flex flex-col gap-16">
                                     <input
                                         type="text"
-                                        placeholder="········"
+                                        placeholder="00000000"
                                         maxLength={8}
                                         className="form-input text-center"
                                         style={{ fontSize: '1.75rem', letterSpacing: '0.25em', fontWeight: 800, height: '64px' }}
