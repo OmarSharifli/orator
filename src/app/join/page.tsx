@@ -67,8 +67,16 @@ export default function JoinWaitlistPage() {
             if (verifyError) {
                 setError('Invalid or expired code. Please try again.');
             } else {
-                await supabase.from('waitlist').upsert([{ email }], { onConflict: 'email' });
-                setStep('success');
+                const { error: dbError } = await supabase
+                    .from('waitlist')
+                    .upsert([{ email }], { onConflict: 'email' });
+
+                if (dbError) {
+                    console.error('Database error:', dbError);
+                    setError('Verified, but failed to save to waitlist. Please contact support.');
+                } else {
+                    setStep('success');
+                }
             }
         } catch {
             setError('Verification failed.');
